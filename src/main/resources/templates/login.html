@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container min-vh-100 d-flex justify-content-center align-items-center">
+
+    <div class="row shadow rounded-4 overflow-hidden bg-white w-100" style="max-width: 900px;">
+
+        <!-- PANEL IZQUIERDO -->
+        <div class="col-lg-6 bg-primary text-white p-5 d-flex flex-column justify-content-center">
+
+            <div class="mb-4">
+                <div class="bg-white text-primary rounded-3 d-inline-flex align-items-center justify-content-center p-3 mb-3">
+                    <i class="bi bi-capsule-pill fs-1"></i>
+                </div>
+
+                <h2 class="fw-bold mb-3">FarmaciaProductos</h2>
+
+                <p class="mb-4">
+                    Sistema de gestión para ventas, medicamentos,
+                    categorías, usuarios y reposición de productos.
+                </p>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="bi bi-cart-check-fill fs-4"></i>
+                <span>Registro de ventas de medicamentos</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <i class="bi bi-box-seam-fill fs-4"></i>
+                <span>Control de productos y stock</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-people-fill fs-4"></i>
+                <span>Acceso por roles de usuario</span>
+            </div>
+
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="col-lg-6 p-5">
+
+            <div class="text-center mb-4">
+
+                <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center p-4 mb-3">
+                    <i class="bi bi-person-circle fs-1"></i>
+                </div>
+
+                <h3 class="fw-bold mb-1">Iniciar sesión</h3>
+
+                <p class="text-secondary mb-0">
+                    Ingrese sus credenciales para acceder al sistema.
+                </p>
+
+            </div>
+
+            <form th:action="@{/loginController/autenticar}"
+                  method="post"
+                  class="needs-validation"
+                  novalidate>
+
+                <!-- Usuario -->
+                <div class="mb-3">
+
+                    <label for="usuario"
+                           class="form-label fw-semibold">
+
+                        Usuario
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-person-fill"></i>
+                        </span>
+
+                        <input type="text"
+                               name="usuario"
+                               id="usuario"
+                               class="form-control"
+                               placeholder="Ingrese su usuario"
+                               required>
+
+                    </div>
+
+                    <div class="invalid-feedback">
+                        Ingrese su usuario.
+                    </div>
+
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+
+                    <label for="password"
+                           class="form-label fw-semibold">
+
+                        Contraseña
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+
+                        <input type="password"
+                               name="password"
+                               id="password"
+                               class="form-control"
+                               placeholder="Ingrese su contraseña"
+                               required>
+
+                    </div>
+
+                    <div class="invalid-feedback">
+                        Ingrese su contraseña.
+                    </div>
+
+                </div>
+
+                <!-- Error Thymeleaf -->
+
+                <div th:if="${error}"
+                     class="alert alert-danger d-flex align-items-center mt-3">
+
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                    <span th:text="${error}"></span>
+
+                </div>
+
+                <button class="btn btn-primary btn-lg w-100 mt-3"
+                        type="submit">
+
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                    Ingresar
+
+                </button>
+
+            </form>
+
+            <div class="text-center mt-4">
+
+                <small class="text-secondary">
+                    © 2026 FarmaciaProductos
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+(function () {
+
+    'use strict';
+
+    var forms =
+        document.querySelectorAll('.needs-validation');
+
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+
+            form.addEventListener(
+                'submit',
+                function (event) {
+
+                    if (!form.checkValidity()) {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                    }
+
+                    form.classList.add('was-validated');
+
+                },
+                false
+            );
+
+        });
+
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<footer>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<script>
+	(() => {
+		  'use strict'
+
+		  const forms = document.querySelectorAll('.needs-validation')
+
+		  Array.from(forms).forEach(form => {
+		    form.addEventListener('submit', event => {
+		      if (!form.checkValidity()) {
+		        event.preventDefault()
+		        event.stopPropagation()
+		      }
+
+		      form.classList.add('was-validated')
+		    }, false)
+		  })
+		})()						
+	</script>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	
+	<script>
+		var mensaje = null;
+
+		if(mensaje === "create"){
+			Swal.fire({
+				  title: "Se creó correctamente",
+				  icon: "success",
+				  showConfirmButton: false,
+				  timer: 1500
+			});
+		}
+
+		if(mensaje === "update"){
+			Swal.fire({
+				  title: "Se actualizó correctamente",
+				  icon: "success",
+				  showConfirmButton: false,
+				  timer: 1500
+			});
+		}
+		
+		if(mensaje === "sin_stock"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "No hay suficiente stock disponible",
+				  icon: "error"
+			});
+		}
+
+		if(mensaje === "cantidad_error"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "Cantidad inválida",
+				  icon: "error"
+			});
+		}
+		
+		if(mensaje === "producto_error"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "Producto no encontrado",
+				  icon: "error"
+			});
+		}
+		
+		if(mensaje === "error"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "Ocurrió un error inesperado",
+				  icon: "error"
+			});
+		}
+		
+		if(mensaje === "carrito_vacio"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "Carrito Vacio",
+				  icon: "error"
+			});
+		}
+
+		
+		
+
+		if(mensaje === "delete"){
+			Swal.fire({
+				  title: "Se eliminó correctamente",
+				  icon: "success",
+				  showConfirmButton: false,
+				  timer: 1500
+			});
+		}
+
+		if(mensaje === "error_delete"){
+			Swal.fire({
+				  title: "No se puede eliminar",
+				  text: "Este registro está relacionado con otros datos del sistema.",
+				  icon: "error"
+			});
+		}
+
+		if(mensaje === "error"){
+			Swal.fire({
+				  title: "Ocurrió un error",
+				  text: "Verifica los datos ingresados.",
+				  icon: "error"
+			});
+		}
+	</script>
+
+	<script>
+		document.querySelectorAll('.btn-eliminar').forEach(boton => {
+			boton.addEventListener('click', function(e) {
+				e.preventDefault();
+
+				const url = this.getAttribute('href');
+
+				Swal.fire({
+				  title: "¿Estás seguro?",
+				  text: "No podrás revertir esta acción.",
+				  icon: "warning",
+				  showCancelButton: true,
+				  confirmButtonColor: "#3085d6",
+				  cancelButtonColor: "#d33",
+				  confirmButtonText: "Sí, eliminar",
+				  cancelButtonText: "Cancelar"
+				}).then((result) => {
+				  if (result.isConfirmed) {
+				    window.location.href = url;
+				  }
+				});
+			});
+		});
+	</script>
+	
+</footer>

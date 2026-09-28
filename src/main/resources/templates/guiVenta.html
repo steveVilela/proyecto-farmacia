@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Venta</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- BARRA LATERAL SIMPLE -->
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="col-md-9 col-lg-10 p-4">
+
+            <!-- TÍTULO -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="bg-primary text-white rounded-3 p-3">
+                    <i class="bi bi-cart4 fs-3"></i>
+                </div>
+
+                <div>
+                    <h2 class="fw-bold mb-0">Registrar Venta</h2>
+                    <p class="text-secondary mb-0">
+                        Seleccione productos y agréguelos al detalle de la venta.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- PANEL IZQUIERDO -->
+                <div class="col-lg-9">
+
+                    <!-- AGREGAR PRODUCTO -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+
+                            <h5 class="fw-bold text-primary mb-3">Buscar producto</h5>
+
+                            <form th:action="@{/ventas/agregar}" method="post">
+                                <div class="row g-3 align-items-end">
+
+                                    <div class="col-md-7">
+                                        <label class="form-label">Producto</label>
+
+                                        <select name="idProducto" class="form-select" required>
+                                            <option value="">Seleccione producto</option>
+
+                                            <option th:each="p : ${productos}"
+                                                    th:value="${p.idProducto}"
+                                                    th:text="${p.nombreMedicamento + ' - S/ ' + #numbers.formatDecimal(p.precio, 1, 2) + ' (Stock: ' + p.stock + ')'}">
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">Cantidad</label>
+                                        <input type="number" name="cantidad" class="form-control" min="1" required>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="bi bi-plus-circle-fill me-2"></i> Agregar
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <!-- DETALLE DE LA VENTA -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+
+                            <h5 class="fw-bold text-primary mb-3">Detalle de la venta</h5>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead class="table-light text-center">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    <tr th:if="${carrito == null or #lists.isEmpty(carrito)}">
+                                        <td colspan="6" class="text-center text-secondary py-4">
+                                            <i class="bi bi-cart-x fs-4 d-block mb-2"></i>
+                                            Carrito vacío. Agregue productos para registrar la venta.
+                                        </td>
+                                    </tr>
+
+                                    <tr th:each="item, iter : ${carrito}" class="text-center">
+                                        <td th:text="${iter.count}"></td>
+
+                                        <td class="text-start">
+                                            <strong th:text="${item.nombreMedicamento}"></strong>
+                                        </td>
+
+                                        <td>
+                                            S/ <span th:text="${#numbers.formatDecimal(item.precio, 1, 2)}"></span>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-primary rounded-pill"
+                                                  th:text="${item.cantidad}">
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            S/ <span th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)}"></span>
+                                        </td>
+
+                                        <td>
+                                            <a th:href="@{/ventas/quitar/{id}(id=${item.idProducto})}"
+                                               class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+
+                                <div>
+                                    <span class="text-secondary">Total items:</span>
+                                    <strong th:text="${carrito != null ? #aggregates.sum(carrito.![cantidad]) : 0}">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <a th:href="@{/ventas/limpiar}" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i> Limpiar detalle
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- MENSAJE INFORMATIVO -->
+                    <div class="alert alert-primary d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle-fill me-3 fs-5"></i>
+                        <div>
+                            Al registrar la venta, el stock de los productos se actualizará automáticamente.
+                        </div>
+                    </div>
+
+                    <!-- LISTA DE VENTAS -->
+                    <div class="card shadow-sm mt-4">
+                        <div class="card-body">
+
+                            <h5 class="fw-bold text-primary mb-3">
+                                <i class="bi bi-receipt me-2"></i> Lista de ventas registradas
+                            </h5>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead class="table-light text-center">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fecha</th>
+                                        <th>Vendedor</th>
+                                        <th>Total</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    <tr th:if="${ventas == null or #lists.isEmpty(ventas)}">
+                                        <td colspan="4" class="text-center text-secondary py-3">
+                                            No hay ventas registradas.
+                                        </td>
+                                    </tr>
+
+                                    <tr th:each="v : ${ventas}" class="text-center">
+                                        <td th:text="${v.idVenta}"></td>
+                                        <td th:text="${v.fechaVenta}"></td>
+
+                                        <td>
+										    <span th:if="${v.objUsuario != null}"
+										          th:text="${v.objUsuario.nombre}">
+										        Nombre vendedor
+										    </span>
+										
+										
+										<span th:if="${v.objUsuario == null}">
+										    Sin usuario
+										</span>
+										
+										
+										</td>
+
+
+                                        <td>
+                                            S/ <span th:text="${#numbers.formatDecimal(v.total, 1, 2)}"></span>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- PANEL DERECHO -->
+                <div class="col-lg-3">
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="fw-bold text-primary mb-3">Resumen de la venta</h5>
+
+                            <hr>
+
+                            <div class="mb-4">
+                                <div class="d-flex gap-3">
+                                    <i class="bi bi-calendar-event-fill text-primary fs-4"></i>
+
+                                    <div>
+                                        <div class="fw-bold">Fecha de venta</div>
+                                        <small th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy HH:mm:ss')}">
+                                            Fecha actual
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-4">
+                                <div class="d-flex gap-3">
+                                    <i class="bi bi-person-fill text-primary fs-4"></i>
+
+                                    <div>
+                                        <div class="fw-bold">Vendedor</div>
+											<span th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.nombre : 'Sin usuario'}">
+											    Usuario logueado
+											</span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="text-center mb-4">
+                                <div class="fw-bold text-secondary">Total a pagar</div>
+
+                                <div class="display-5 fw-bold text-success">
+                                    S/ <span th:text="${#numbers.formatDecimal(total, 1, 2)}">0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Método de pago</label>
+                                <select class="form-select">
+                                    <option>Efectivo</option>
+                                    <option>Yape</option>
+                                    <option>Plin</option>
+                                    <option>Tarjeta</option>
+                                    <option>Transferencia</option>
+                                </select>
+                            </div>
+
+                            <form th:action="@{/ventas/guardar}" method="post">
+                                <button type="submit"
+                                        class="btn btn-success btn-lg w-100 mb-3"
+                                        th:disabled="${carrito == null or #lists.isEmpty(carrito)}">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    Registrar venta
+                                </button>
+                            </form>
+
+                            <button class="btn btn-outline-primary btn-lg w-100 mb-3" disabled>
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Ver comprobante
+                            </button>
+
+                            <a th:href="@{/ventas/limpiar}" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="bi bi-plus-circle-fill me-2"></i>
+                                Nueva venta
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
